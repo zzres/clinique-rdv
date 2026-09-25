@@ -1,59 +1,76 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🩺 Clinique RDV — Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Une application de prise de rendez-vous en ligne pour une clinique médicale, avec calcul dynamique des créneaux disponibles et un espace d'administration complet.
 
-## About Laravel
+## 🔗 Démo en ligne
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+👉 **[Voir le site en ligne](https://clinique-rdv-4j82.onrender.com)**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+⚠️ Le site est hébergé sur un plan gratuit : le premier chargement peut prendre 30 à 60 secondes si le site était inactif.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Identifiants de test
 
-## Learning Laravel
+| Rôle | Email | Mot de passe |
+|---|---|---|
+| Patient | patient@example.com | password |
+| Admin (médecin) | medecin@example.com | password |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## ✨ Fonctionnalités
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Côté patient**
+- Prise de rendez-vous avec calcul dynamique des créneaux disponibles
+- Choix du type de consultation (durée variable selon le type)
+- Historique des rendez-vous, avec possibilité d'annulation
+- Authentification (inscription / connexion)
 
-## Laravel Sponsors
+**Côté administration**
+- Dashboard avec statistiques (rendez-vous du jour/semaine, patients uniques)
+- Gestion des disponibilités hebdomadaires via une grille horaire interactive
+- Gestion des indisponibilités ponctuelles (congés, absences)
+- Planning journalier avec filtrage par date
+- Confirmation/annulation des rendez-vous
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Stack technique
 
-### Premium Partners
+- **Backend** : Laravel 12, PHP 8.2
+- **Frontend** : Blade, Alpine.js, Tailwind CSS
+- **Base de données** : PostgreSQL (Neon)
+- **Authentification** : Laravel Breeze
+- **Déploiement** : Docker, Render
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🧠 Choix techniques
 
-## Contributing
+- **Calcul de créneaux via un service dédié** (`AppointmentAvailabilityService`) : centralise la logique complexe de croisement entre disponibilités récurrentes, indisponibilités ponctuelles et rendez-vous déjà pris, réutilisable partout où c'est nécessaire.
+- **Revérification de la disponibilité au moment de la confirmation** : évite qu'un créneau soit réservé deux fois si deux patients tentent de réserver au même moment.
+- **Heure de fin stockée explicitement sur chaque rendez-vous** plutôt que recalculée à partir de la durée du type de consultation, pour ne pas altérer l'historique si la durée d'un type change plus tard.
+- **Grille horaire interactive pour les disponibilités admin** : les créneaux cochés sont automatiquement fusionnés en plages continues côté serveur, pour une gestion plus naturelle qu'un formulaire classique.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📸 Aperçu
 
-## Code of Conduct
+![alt text](<IMG/page du prise de rendez-vous.png>)
+![alt text](IMG/Dashboard_Admin.png)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## ⚙️ Installation locale
 
-## Security Vulnerabilities
+```bash
+git clone https://github.com/zzres/clinique-rdv.git
+cd clinique-rdv
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+composer install
+npm install
 
-## License
+cp .env.example .env
+php artisan key:generate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Configurer la base de données dans le fichier .env
+
+php artisan migrate --seed
+npm run build
+
+php artisan serve
+```
+
+## 👤 Auteur
+
+Développé par Alvain Junior Saminzere Zero
+Retrouvez-moi sur [Codeur.com](https://www.codeur.com/-alvainz23) pour vos projets de développement web.
